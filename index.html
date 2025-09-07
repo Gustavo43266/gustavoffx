@@ -3,15 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Verde Escuro</title>
+  <title>Auxílio Verde</title>
   <style>
     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
       background: black;
       color: #00ff66;
-      font-family: Arial, sans-serif;
       overflow: hidden;
     }
 
+    /* Tela de login */
+    #login {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 20;
+    }
+    #login input {
+      width: 250px;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid rgba(0,255,102,0.5);
+      background: rgba(0,20,0,0.8);
+      color: #00ff66;
+    }
+    #login button {
+      width: 270px;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(to right, #00ff66, #003300);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0,255,102,0.3);
+    }
+    #login button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(0,255,102,0.6);
+    }
+    #login-msg {
+      color: red;
+      margin-top: 8px;
+      font-weight: bold;
+      display: none;
+    }
+
+    /* Painel principal */
     .panel {
       position: fixed;
       top: 100px;
@@ -24,6 +70,7 @@
       backdrop-filter: blur(8px);
       z-index: 10;
       transition: transform 0.2s ease;
+      display: none;
     }
 
     .panel-header {
@@ -41,16 +88,9 @@
       padding: 15px;
     }
 
-    label {
-      display: block;
-      margin: 10px 0;
-    }
+    label { display: block; margin: 10px 0; }
 
-    input[type="checkbox"] {
-      accent-color: #00ff66;
-      transform: scale(1.2);
-      margin-right: 8px;
-    }
+    input[type="checkbox"] { accent-color: #00ff66; transform: scale(1.2); margin-right: 8px; }
 
     .inject-btn {
       margin-top: 15px;
@@ -65,11 +105,7 @@
       box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
       transition: transform 0.2s ease, box-shadow 0.3s;
     }
-
-    .inject-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
-    }
+    .inject-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,255,102,0.6); }
 
     .success-msg {
       display: none;
@@ -84,8 +120,8 @@
     }
 
     @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(-10px);}
-      to {opacity: 1; transform: translateY(0);}
+      from {opacity:0; transform:translateY(-10px);}
+      to {opacity:1; transform:translateY(0);}
     }
 
     .minimize-btn {
@@ -115,11 +151,7 @@
       box-shadow: 0 0 12px rgba(0, 255, 102, 0.6);
       transition: transform 0.2s ease, box-shadow 0.3s;
     }
-
-    .reopen-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(0, 255, 102, 1);
-    }
+    .reopen-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(0,255,102,1); }
 
     .stars {
       position: absolute;
@@ -128,18 +160,24 @@
       background: #00ff66;
       animation: twinkle 2s infinite alternate;
     }
-
-    @keyframes twinkle {
-      from {opacity: 0.2;}
-      to {opacity: 1;}
-    }
+    @keyframes twinkle { from {opacity:0.2;} to {opacity:1;} }
   </style>
 </head>
 <body>
 
+  <!-- LOGIN -->
+  <div id="login">
+    <h2>LOGIN</h2>
+    <input type="text" id="username" placeholder="Usuário">
+    <input type="password" id="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+    <div id="login-msg">Usuário ou senha incorreto!</div>
+  </div>
+
+  <!-- PAINEL -->
   <div class="panel" id="panel">
     <div class="panel-header" id="drag-header">
-      Painel Hacker
+      AUXÍLIO BY @gustavozzq
       <button class="minimize-btn" onclick="minimizePanel()">–</button>
     </div>
     <div class="panel-content">
@@ -157,6 +195,20 @@
   <button class="reopen-btn" id="reopen-btn" onclick="reopenPanel()">+</button>
 
   <script>
+    const USER = "gustavoffx";
+    const PASS = "pulantffx";
+
+    function login() {
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      if(u === USER && p === PASS){
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('panel').style.display = 'block';
+      } else {
+        document.getElementById('login-msg').style.display = 'block';
+      }
+    }
+
     function inject() {
       document.getElementById('success-msg').style.display = 'block';
       setTimeout(() => {
@@ -174,22 +226,18 @@
       document.getElementById('reopen-btn').style.display = 'none';
     }
 
-    // Arrastar painel
     dragElement(document.getElementById("panel"), document.getElementById("drag-header"));
-
-    function dragElement(elmnt, dragHandle) {
-      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    function dragElement(elmnt, dragHandle){
+      let pos1=0,pos2=0,pos3=0,pos4=0;
       dragHandle.onmousedown = dragMouseDown;
-
-      function dragMouseDown(e) {
+      function dragMouseDown(e){
         e.preventDefault();
         pos3 = e.clientX;
         pos4 = e.clientY;
         document.onmouseup = closeDragElement;
         document.onmousemove = elementDrag;
       }
-
-      function elementDrag(e) {
+      function elementDrag(e){
         e.preventDefault();
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
@@ -198,20 +246,15 @@
         elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
         elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
       }
-
-      function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-      }
+      function closeDragElement(){ document.onmouseup=null; document.onmousemove=null; }
     }
 
-    // Criar estrelas
-    for (let i = 0; i < 50; i++) {
+    for(let i=0;i<50;i++){
       const star = document.createElement('div');
-      star.className = 'stars';
-      star.style.top = Math.random() * window.innerHeight + 'px';
-      star.style.left = Math.random() * window.innerWidth + 'px';
-      star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      star.className='stars';
+      star.style.top = Math.random()*window.innerHeight+'px';
+      star.style.left = Math.random()*window.innerWidth+'px';
+      star.style.animationDuration = (Math.random()*3+2)+'s';
       document.body.appendChild(star);
     }
   </script>
