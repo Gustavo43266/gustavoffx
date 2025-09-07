@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Verde Escuro</title>
+  <style>
+    body {
+      background: black;
+      color: #00ff66;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .panel {
+      position: fixed;
+      top: 100px;
+      left: 100px;
+      width: 320px;
+      background: rgba(0, 40, 0, 0.6);
+      border: 1px solid rgba(0, 255, 102, 0.4);
+      border-radius: 12px;
+      box-shadow: 0 0 14px rgba(0, 255, 102, 0.3);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+      transition: transform 0.2s ease;
+    }
+
+    .panel-header {
+      background: rgba(0, 255, 102, 0.15);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.3);
+      padding: 10px;
+      cursor: move;
+      font-weight: bold;
+      text-align: center;
+      color: #00ff66;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .panel-content {
+      padding: 15px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+
+    input[type="checkbox"] {
+      accent-color: #00ff66;
+      transform: scale(1.2);
+      margin-right: 8px;
+    }
+
+    .inject-btn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #00ff66, #003300);
+      border: none;
+      border-radius: 8px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.3s;
+    }
+
+    .inject-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
+    }
+
+    .success-msg {
+      display: none;
+      margin-top: 10px;
+      padding: 8px;
+      background: rgba(0, 255, 102, 0.9);
+      border-radius: 8px;
+      color: black;
+      text-align: center;
+      font-weight: bold;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .minimize-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: #00ff66;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .reopen-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #00ff66, #003300);
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+      color: black;
+      cursor: pointer;
+      display: none;
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.6);
+      transition: transform 0.2s ease, box-shadow 0.3s;
+    }
+
+    .reopen-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 1);
+    }
+
+    .stars {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #00ff66;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from {opacity: 0.2;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panel" id="panel">
+    <div class="panel-header" id="drag-header">
+      Painel Hacker
+      <button class="minimize-btn" onclick="minimizePanel()">–</button>
+    </div>
+    <div class="panel-content">
+      <label><input type="checkbox">Aimbot</label>
+      <label><input type="checkbox">No Recoil</label>
+      <label><input type="checkbox">120 FPS</label>
+      <label><input type="checkbox">Head Trick</label>
+      <label><input type="checkbox">Neural Aim</label>
+      <label><input type="checkbox">FOV Hack</label>
+      <button class="inject-btn" onclick="inject()">Injetar</button>
+      <div class="success-msg" id="success-msg">✅ Injetado com sucesso!</div>
+    </div>
+  </div>
+
+  <button class="reopen-btn" id="reopen-btn" onclick="reopenPanel()">+</button>
+
+  <script>
+    function inject() {
+      document.getElementById('success-msg').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('success-msg').style.display = 'none';
+      }, 2000);
+    }
+
+    function minimizePanel() {
+      document.getElementById('panel').style.display = 'none';
+      document.getElementById('reopen-btn').style.display = 'block';
+    }
+
+    function reopenPanel() {
+      document.getElementById('panel').style.display = 'block';
+      document.getElementById('reopen-btn').style.display = 'none';
+    }
+
+    // Arrastar painel
+    dragElement(document.getElementById("panel"), document.getElementById("drag-header"));
+
+    function dragElement(elmnt, dragHandle) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      dragHandle.onmousedown = dragMouseDown;
+
+      function dragMouseDown(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+      }
+
+      function elementDrag(e) {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+
+    // Criar estrelas
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement('div');
+      star.className = 'stars';
+      star.style.top = Math.random() * window.innerHeight + 'px';
+      star.style.left = Math.random() * window.innerWidth + 'px';
+      star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      document.body.appendChild(star);
+    }
+  </script>
+</body>
+</html>
